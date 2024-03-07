@@ -2,7 +2,7 @@
 
 Para desenvolver as atividades da disciplina de Computação Gráfica favor utilizar as respectivas pastas para postar os trabalhos de cada unidade.  
 
-Alunos:  
+Alunos: Ana Carolina da Silva - Bernardo Kretzer - João Arthur Pereira Alba - Nicole Taufenbach  
 
 ## [Atividades da Unidade 1](Unidade1/ "Atividades da Unidade 1")
 
