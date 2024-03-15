@@ -18,4 +18,4 @@ Nesta área nunca se chega a 100%
 Preços dos HMD
 Preocupação do uso do Google Glass -> privacidade  
 
-[Equipe-01.pdf](Equipe-01.pdf)  
+[Slides.pdf](Slides.pdf)  
