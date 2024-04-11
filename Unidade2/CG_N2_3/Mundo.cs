@@ -117,18 +117,21 @@ namespace gcgcg
                 #region Fazer girar como relógio
                 if (input.IsKeyPressed(Keys.X))
                 {
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.05, objetoSelecionado.PontosId(1).Y + 0.05, 0), 1);
+                    Ponto4D vetor = new(objetoSelecionado.PontosId(1).X - objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(1).Y - objetoSelecionado.PontosId(0).Y, 0);
+                    double raio = Matematica.distancia(objetoSelecionado.PontosId(0), objetoSelecionado.PontosId(1));
+                    double aTan = Math.Atan2(vetor.Y, vetor.X);
+                    double angulo = aTan * (180 / Math.PI);
+                    Ponto4D newPonto = Matematica.GerarPtosCirculo(angulo + 5.0, raio);
+                    objetoSelecionado.PontosAlterar(newPonto, 1);
                     objetoSelecionado.ObjetoAtualizar();
                 }
                 if (input.IsKeyPressed(Keys.Z))
                 {
                     Ponto4D vetor = new(objetoSelecionado.PontosId(1).X - objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(1).Y - objetoSelecionado.PontosId(0).Y, 0);
-                    Console.WriteLine(vetor);
                     double raio = Matematica.distancia(objetoSelecionado.PontosId(0), objetoSelecionado.PontosId(1));
-                    double hip = Math.Pow(vetor.X, 2) + Math.Pow(vetor.Y, 2);
-                    double angulo = Math.Acos(vetor.X / raio);
-                    Console.WriteLine(angulo);
-                    Ponto4D newPonto = Matematica.GerarPtosCirculo(angulo + 0.05, raio);
+                    double aTan = Math.Atan2(vetor.Y, vetor.X);
+                    double angulo = aTan * (180 / Math.PI);
+                    Ponto4D newPonto = Matematica.GerarPtosCirculo(angulo - 5.0, raio);
                     objetoSelecionado.PontosAlterar(newPonto, 1);
                     objetoSelecionado.ObjetoAtualizar();
                 }
