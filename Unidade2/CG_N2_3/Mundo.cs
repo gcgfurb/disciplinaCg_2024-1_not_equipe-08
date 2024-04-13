@@ -9,10 +9,6 @@ using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Windowing.Desktop;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-// using OpenTK.Mathematics;
 
 namespace gcgcg
 {
@@ -61,10 +57,10 @@ namespace gcgcg
             _shaderVerde = new Shader("Shaders/shader.vert", "Shaders/shaderVerde.frag");
             _shaderAzul = new Shader("Shaders/shader.vert", "Shaders/shaderAzul.frag");
             #endregion
-
-            #region Objeto: segmento de reta  
-            objetoSelecionado = new SegReta(mundo, ref rotuloAtual, new Ponto4D(0, 0), new Ponto4D(0.25, 0.25));
-            #endregion            
+  
+            #region Objeto: Sr.Palito 
+            objetoSelecionado = new SrPalito(mundo, ref rotuloAtual);
+            #endregion        
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -92,50 +88,30 @@ namespace gcgcg
             }
             else
             {
-                if (input.IsKeyPressed(Keys.Q))
-                {
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X - 0.05, objetoSelecionado.PontosId(0).Y, 0), 0);
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - 0.05, objetoSelecionado.PontosId(1).Y, 0), 1);
-                    objetoSelecionado.ObjetoAtualizar();
-                }
                 if (input.IsKeyPressed(Keys.W))
                 {
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(0).X + 0.05, objetoSelecionado.PontosId(0).Y, 0), 0);
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.05, objetoSelecionado.PontosId(1).Y, 0), 1);
-                    objetoSelecionado.ObjetoAtualizar();
+                    (objetoSelecionado as SrPalito).Movimentar(0.05);
+                }
+                if (input.IsKeyPressed(Keys.Q))
+                {
+                    (objetoSelecionado as SrPalito).Movimentar(-0.05);
                 }
                 if (input.IsKeyPressed(Keys.S))
                 {
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X + 0.05, objetoSelecionado.PontosId(1).Y + 0.05, 0), 1);
-                    objetoSelecionado.ObjetoAtualizar();
+                   (objetoSelecionado as SrPalito).MudaTamanho(0.05);
                 }
                 if (input.IsKeyPressed(Keys.A))
                 {
-                    objetoSelecionado.PontosAlterar(new Ponto4D(objetoSelecionado.PontosId(1).X - 0.05, objetoSelecionado.PontosId(1).Y - 0.05, 0), 1);
-                    objetoSelecionado.ObjetoAtualizar();
+                   (objetoSelecionado as SrPalito).MudaTamanho(-0.05);
                 }
-                #region Fazer girar como relógio
                 if (input.IsKeyPressed(Keys.X))
                 {
-                    Ponto4D vetor = new(objetoSelecionado.PontosId(1).X - objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(1).Y - objetoSelecionado.PontosId(0).Y, 0);
-                    double raio = Matematica.distancia(objetoSelecionado.PontosId(0), objetoSelecionado.PontosId(1));
-                    double aTan = Math.Atan2(vetor.Y, vetor.X);
-                    double angulo = aTan * (180 / Math.PI);
-                    Ponto4D newPonto = Matematica.GerarPtosCirculo(angulo + 5.0, raio);
-                    objetoSelecionado.PontosAlterar(newPonto, 1);
-                    objetoSelecionado.ObjetoAtualizar();
+                  (objetoSelecionado as SrPalito).Girar(5);
                 }
                 if (input.IsKeyPressed(Keys.Z))
                 {
-                    Ponto4D vetor = new(objetoSelecionado.PontosId(1).X - objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(1).Y - objetoSelecionado.PontosId(0).Y, 0);
-                    double raio = Matematica.distancia(objetoSelecionado.PontosId(0), objetoSelecionado.PontosId(1));
-                    double aTan = Math.Atan2(vetor.Y, vetor.X);
-                    double angulo = aTan * (180 / Math.PI);
-                    Ponto4D newPonto = Matematica.GerarPtosCirculo(angulo - 5.0, raio);
-                    objetoSelecionado.PontosAlterar(newPonto, 1);
-                    objetoSelecionado.ObjetoAtualizar();
+                    (objetoSelecionado as SrPalito).Girar(-5);
                 }
-                #endregion
             }
             #endregion
         }
