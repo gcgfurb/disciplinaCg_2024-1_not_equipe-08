@@ -24,7 +24,7 @@ namespace gcgcg
         private Objeto objetoSelecionado = null;
         private Poligono poligono = null;
         private Spline spline = null;
-        private int idxPoligono = 0;
+        private int idxPoligono = 2;
         private double qtdPontosSpline = 0.1;
 
         private readonly float[] _sruEixos =
@@ -79,10 +79,10 @@ namespace gcgcg
             };
 
             #region Objeto: ponto  
-            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(-0.5, 0.5));
-            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.5, 0.5));
-            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.5, -0.5));
-            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(-0.5, -0.5))
+            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.5, 0.5)); //2
+            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(-0.5, 0.5)); //1
+            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(-0.5, -0.5)); //4
+            objetoSelecionado = new Ponto(mundo, ref rotuloAtual, new Ponto4D(0.5, -0.5))//3
             {
                 shaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag"),
             };
@@ -128,13 +128,14 @@ namespace gcgcg
                     objetoSelecionado.shaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderBranca.frag");
                     objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
                     objetoSelecionado.shaderObjeto = new Shader("Shaders/shader.vert", "Shaders/shaderVermelha.frag");
-                    idxPoligono++;
-                    if (idxPoligono > 3) idxPoligono = 0;
+    
+                    if (idxPoligono > 3) idxPoligono = 1;
                 }
                 if (input.IsKeyPressed(Keys.C))
                 {
                     Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(0).Y + 0.1);
                     objetoSelecionado.PontosAlterar(newPonto, 0);
+                    idxPoligono++;
                     poligono.PontosAlterar(newPonto, idxPoligono);
                     spline.Atualizar();
                 }
