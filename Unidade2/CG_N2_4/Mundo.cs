@@ -134,28 +134,28 @@ namespace gcgcg
                 }
                 if (input.IsKeyPressed(Keys.C))
                 {
-                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(0).Y + 0.1);
+                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(0).Y + 0.05);
                     objetoSelecionado.PontosAlterar(newPonto, 0);
                     poligono.PontosAlterar(newPonto, idxPoligono);
                     spline.Atualizar();
                 }
                 if (input.IsKeyPressed(Keys.B))
                 {
-                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(0).Y - 0.1);
+                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X, objetoSelecionado.PontosId(0).Y - 0.05);
                     objetoSelecionado.PontosAlterar(newPonto, 0);
                     poligono.PontosAlterar(newPonto, idxPoligono);
                     spline.Atualizar();
                 }
                  if (input.IsKeyPressed(Keys.D))
                 {
-                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X + 0.1, objetoSelecionado.PontosId(0).Y);
+                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X + 0.05, objetoSelecionado.PontosId(0).Y);
                     objetoSelecionado.PontosAlterar(newPonto, 0);
                     poligono.PontosAlterar(newPonto, idxPoligono);
                     spline.Atualizar();
                 }
                 if (input.IsKeyPressed(Keys.E))
                 {
-                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X - 0.1, objetoSelecionado.PontosId(0).Y);
+                    Ponto4D newPonto = new Ponto4D(objetoSelecionado.PontosId(0).X - 0.05, objetoSelecionado.PontosId(0).Y);
                     objetoSelecionado.PontosAlterar(newPonto, 0);
                     poligono.PontosAlterar(newPonto, idxPoligono);
                     spline.Atualizar();
