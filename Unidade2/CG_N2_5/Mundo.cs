@@ -137,7 +137,7 @@ namespace gcgcg
                 newPto.Y -= 0.01;
             }              
 
-            if (quadrado.Bbox().Dentro(ponto.PontosId(0))) {
+            if (quadrado.Bbox().Dentro(newPto)) {
                 quadrado.PrimitivaTipo = PrimitiveType.LineLoop;
                 Atualizar(newPto); 
             } else {
