@@ -22,6 +22,10 @@ namespace gcgcg
 
     private char rotuloAtual = '?';
     private Objeto objetoSelecionado = null;
+    private int qtdObjetos = 0;
+    private Poligono polignoEmAndamento = null;
+    private int idxNewPto = 1;
+    private Ponto4D sruPonto = null;
 
     private readonly float[] _sruEixos =
     [
@@ -80,23 +84,6 @@ namespace gcgcg
       GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
       GL.EnableVertexAttribArray(0);
       #endregion
-
-      #region Objeto: polígono qualquer  
-      List<Ponto4D> pontosPoligonoBandeira = new List<Ponto4D>();
-      pontosPoligonoBandeira.Add(new Ponto4D(0.25, 0.25));  // A = (0.25, 0.25)
-      pontosPoligonoBandeira.Add(new Ponto4D(0.75, 0.25));  // B = (0.75, 0.25)
-      pontosPoligonoBandeira.Add(new Ponto4D(0.75, 0.75));  // C = (0.75, 0.75)
-      pontosPoligonoBandeira.Add(new Ponto4D(0.50, 0.50));  // D = (0.50, 0.50)
-      pontosPoligonoBandeira.Add(new Ponto4D(0.25, 0.75));  // E = (0.25, 0.75)
-      objetoSelecionado = new Poligono(mundo, ref rotuloAtual, pontosPoligonoBandeira);
-      #endregion
-      #region declara um objeto filho ao polígono
-      List<Ponto4D> pontosPoligonoTriangulo = new List<Ponto4D>();
-      pontosPoligonoTriangulo.Add(new Ponto4D(0.50, 0.50)); // F = (0.50, 0.50)
-      pontosPoligonoTriangulo.Add(new Ponto4D(0.75, 0.75)); // G = (0.75, 0.75)
-      pontosPoligonoTriangulo.Add(new Ponto4D(0.25, 0.75)); // H = (0.25, 0.75)
-      objetoSelecionado = new Poligono(objetoSelecionado, ref rotuloAtual, pontosPoligonoTriangulo);
-      #endregion
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -109,7 +96,8 @@ namespace gcgcg
 
 #if CG_Gizmo      
       Gizmo_Sru3D();
-      Gizmo_BBox();
+      if (objetoSelecionado != null) objetoSelecionado.Bbox().Desenhar(new Transformacao4D());
+      // Gizmo_BBox();
 #endif
       SwapBuffers();
     }
@@ -131,10 +119,11 @@ namespace gcgcg
         objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
         // objetoSelecionado.shaderObjeto = _shaderAmarela;
       }
-      if (estadoTeclado.IsKeyPressed(Keys.G))                 //TODO: testar com grafo maior ,, irmãos
-        mundo.GrafocenaImprimir("");
-      if (estadoTeclado.IsKeyPressed(Keys.P) && objetoSelecionado != null)
-        Console.WriteLine(objetoSelecionado.ToString());
+      if (estadoTeclado.IsKeyPressed(Keys.P) && objetoSelecionado != null) {
+        Console.WriteLine(objetoSelecionado.ToString()); // TODO: Mudar poligno selecionado para aberto ou fechado
+        if (objetoSelecionado.PrimitivaTipo == PrimitiveType.LineLoop) objetoSelecionado.PrimitivaTipo = PrimitiveType.LineStrip;
+        else objetoSelecionado.PrimitivaTipo = PrimitiveType.LineLoop;
+      }
       if (estadoTeclado.IsKeyPressed(Keys.M) && objetoSelecionado != null)
         objetoSelecionado.MatrizImprimir();
       //TODO: não está atualizando a BBox com as transformações geométricas
@@ -156,43 +145,111 @@ namespace gcgcg
         objetoSelecionado.MatrizEscalaXYZBBox(0.5, 0.5, 0.5);
       if (estadoTeclado.IsKeyPressed(Keys.End) && objetoSelecionado != null)
         objetoSelecionado.MatrizEscalaXYZBBox(2, 2, 2);
-      if (estadoTeclado.IsKeyPressed(Keys.D1) && objetoSelecionado != null)
-        objetoSelecionado.MatrizRotacao(10);
-      if (estadoTeclado.IsKeyPressed(Keys.D2) && objetoSelecionado != null)
-        objetoSelecionado.MatrizRotacao(-10);
-    if (estadoTeclado.IsKeyPressed(Keys.D3) && objetoSelecionado != null)   //FIXME: problema depois de usa rotação pto qquer, não usa o novo centro da BBOX
-        objetoSelecionado.MatrizRotacaoZBBox(10);
+      if (estadoTeclado.IsKeyPressed(Keys.D3) && objetoSelecionado != null)   //FIXME: problema depois de usa rotação pto qquer, não usa o novo centro da BBOX
+          objetoSelecionado.MatrizRotacaoZBBox(10);
       if (estadoTeclado.IsKeyPressed(Keys.D4) && objetoSelecionado != null)
         objetoSelecionado.MatrizRotacaoZBBox(-10);
+      if (estadoTeclado.IsKeyPressed(Keys.Enter)) {
+        Console.WriteLine("estadoTeclado.IsKeyPressed(Keys.Enter)");
+        // TODO: Falta adicionar o quadrado no meio 
+        objetoSelecionado = polignoEmAndamento;
+        qtdObjetos++;
+        polignoEmAndamento = null;
+        idxNewPto = 1;
+      }
+      if (estadoTeclado.IsKeyPressed(Keys.D) && objetoSelecionado != null) {
+       objetoSelecionado.PontosLimpar();    
+       objetoSelecionado = null;    
+      }
+      if (estadoTeclado.IsKeyPressed(Keys.E)) {}
+      // TODO: Remover vertice mais proximo do mouse
+      if (estadoTeclado.IsKeyPressed(Keys.R) && objetoSelecionado != null) 
+       objetoSelecionado.ShaderObjeto =_shaderVermelha;
+      if (estadoTeclado.IsKeyPressed(Keys.G) && objetoSelecionado != null) 
+       objetoSelecionado.ShaderObjeto = _shaderVerde;
+      if (estadoTeclado.IsKeyPressed(Keys.B) && objetoSelecionado != null) 
+       objetoSelecionado.ShaderObjeto = _shaderAzul;
+
       #endregion
 
       #region  Mouse
+      int janelaLargura = ClientSize.X;
+      int janelaAltura = ClientSize.Y;
+      Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
+      Ponto4D newPTO = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
 
+      if (estadoTeclado.IsKeyDown(Keys.V)) {
+        // TODO: Mover vertice mais proximo do mouse
+        double menor = Matematica.Distancia(newPTO, objetoSelecionado.PontosId(0));
+        int idxToChange = 0;
+
+        for (int j = 1; j < objetoSelecionado.PontosListaTamanho; j++) {
+            double distancia = Matematica.Distancia(newPTO, objetoSelecionado.PontosId(j));
+            if (distancia < menor) {
+              menor = distancia;
+              idxToChange = j;
+            }
+        }
+
+        objetoSelecionado.PontosAlterar(newPTO, idxToChange);
+      }
+      if (estadoTeclado.IsKeyPressed(Keys.E)) {
+        // TODO: Mover vertice mais proximo do mouse
+        double menor = Matematica.Distancia(newPTO, objetoSelecionado.PontosId(0));
+        int idxToChange = 0;
+        for (int j = 1; j < objetoSelecionado.PontosListaTamanho; j++)
+        {
+            double distancia = Matematica.Distancia(newPTO, objetoSelecionado.PontosId(j));
+            if (distancia < menor) {
+                menor = distancia;
+
+              idxToChange = j;
+            }
+        }
+        objetoSelecionado.PontoRemover(idxToChange);
+      }
       if (MouseState.IsButtonPressed(MouseButton.Left))
       {
-        Console.WriteLine("MouseState.IsButtonPressed(MouseButton.Left)");
-        Console.WriteLine("__ Valores do Espaço de Tela");
-        Console.WriteLine("Vector2 mousePosition: " + MousePosition);
-        Console.WriteLine("Vector2i windowSize: " + ClientSize);
+        for (int i = 0; i <= qtdObjetos; i++)
+        {
+          if (objetoSelecionado == null) objetoSelecionado = mundo;
+
+          objetoSelecionado = mundo.GrafocenaBuscaProximo(objetoSelecionado);
+          if (objetoSelecionado.Bbox().Dentro(newPTO)) {
+            Ponto4D pivoPto = objetoSelecionado.PontosId(0);
+            for (int j = 1; j < objetoSelecionado.PontosListaTamanho; j++)
+            {
+              if (Matematica.ScanLine(newPTO, pivoPto, objetoSelecionado.PontosId(j))) {
+                return;
+              }
+              pivoPto = objetoSelecionado.PontosId(j);
+            }
+          }
+        }
+        objetoSelecionado = null;
       }
-      if (MouseState.IsButtonDown(MouseButton.Right) && objetoSelecionado != null)
+      if (MouseState.IsButtonDown(MouseButton.Right))
       {
-        Console.WriteLine("MouseState.IsButtonDown(MouseButton.Right)");
+        sruPonto = newPTO;
 
-        int janelaLargura = ClientSize.X;
-        int janelaAltura = ClientSize.Y;
-        Ponto4D mousePonto = new Ponto4D(MousePosition.X, MousePosition.Y);
-        Ponto4D sruPonto = Utilitario.NDC_TelaSRU(janelaLargura, janelaAltura, mousePonto);
-
-        objetoSelecionado.PontosAlterar(sruPonto, 0);
+        if (polignoEmAndamento != null) {
+          polignoEmAndamento.PontosAlterar(sruPonto, idxNewPto);
+        } else {
+          List<Ponto4D> pontosPoligono = new List<Ponto4D>();
+          pontosPoligono.Add(sruPonto); 
+          pontosPoligono.Add(sruPonto); 
+          if (objetoSelecionado != null) polignoEmAndamento = new Poligono(objetoSelecionado, ref rotuloAtual, pontosPoligono);
+          else polignoEmAndamento = new Poligono(mundo, ref rotuloAtual, pontosPoligono);
+        }
       }
       if (MouseState.IsButtonReleased(MouseButton.Right))
       {
-        Console.WriteLine("MouseState.IsButtonReleased(MouseButton.Right)");
+        if (polignoEmAndamento != null) {
+          polignoEmAndamento.PontosAdicionar(sruPonto);
+          idxNewPto++;
+        }
       }
-
       #endregion
-
     }
 
     protected override void OnResize(ResizeEventArgs e)
@@ -255,45 +312,5 @@ namespace gcgcg
 #endif
     }
 #endif    
-
-#if CG_Gizmo
-    private void Gizmo_BBox()   //FIXME: não é atualizada com as transformações globais
-    {
-      if (objetoSelecionado != null)
-      {
-
-#if CG_OpenGL && !CG_DirectX
-
-        float[] _bbox =
-        {
-        (float) objetoSelecionado.Bbox().ObterMenorX, (float) objetoSelecionado.Bbox().ObterMenorY, 0.0f, // A
-        (float) objetoSelecionado.Bbox().ObterMaiorX, (float) objetoSelecionado.Bbox().ObterMenorY, 0.0f, // B
-        (float) objetoSelecionado.Bbox().ObterMaiorX, (float) objetoSelecionado.Bbox().ObterMaiorY, 0.0f, // C
-        (float) objetoSelecionado.Bbox().ObterMenorX, (float) objetoSelecionado.Bbox().ObterMaiorY, 0.0f  // D
-      };
-
-        _vertexBufferObject_bbox = GL.GenBuffer();
-        GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject_bbox);
-        GL.BufferData(BufferTarget.ArrayBuffer, _bbox.Length * sizeof(float), _bbox, BufferUsageHint.StaticDraw);
-        _vertexArrayObject_bbox = GL.GenVertexArray();
-        GL.BindVertexArray(_vertexArrayObject_bbox);
-        GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
-        GL.EnableVertexAttribArray(0);
-
-        var transform = Matrix4.Identity;
-        GL.BindVertexArray(_vertexArrayObject_bbox);
-        _shaderAmarela.SetMatrix4("transform", transform);
-        _shaderAmarela.Use();
-        GL.DrawArrays(PrimitiveType.LineLoop, 0, (_bbox.Length / 3));
-
-#elif CG_DirectX && !CG_OpenGL
-      Console.WriteLine(" .. Coloque aqui o seu código em DirectX");
-#elif (CG_DirectX && CG_OpenGL) || (!CG_DirectX && !CG_OpenGL)
-      Console.WriteLine(" .. ERRO de Render - escolha OpenGL ou DirectX !!");
-#endif
-      }
-    }
-#endif    
-
   }
 }

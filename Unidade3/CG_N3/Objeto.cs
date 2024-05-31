@@ -142,6 +142,12 @@ namespace gcgcg
       ObjetoAtualizar();
     }
 
+    public void PontoRemover(int posicao)
+    {
+      pontosLista.RemoveAt(posicao);
+      ObjetoAtualizar();
+    }
+
     public void PontosLimpar()
     {
       pontosLista.Clear();
