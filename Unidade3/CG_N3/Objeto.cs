@@ -93,6 +93,13 @@ namespace gcgcg
       GL.EnableVertexAttribArray(0);
     }
 
+    public Transformacao4D getPaiRefMatriz() 
+    {
+      Transformacao4D result;
+      result = paiRef != null ? paiRef.getPaiRefMatriz().MultiplicarMatriz(matriz) : matriz;
+      return result;
+    }
+
     public void Desenhar(Transformacao4D matrizGrafo)
     {
 #if CG_OpenGL && !CG_DirectX
@@ -240,7 +247,6 @@ namespace gcgcg
       matrizGlobal = matrizTmpTranslacaoInversa.MultiplicarMatriz(matrizGlobal);
 
       matriz = matriz.MultiplicarMatriz(matrizGlobal);
-
       ObjetoAtualizar();
     }
     public void MatrizRotacaoEixo(double angulo)

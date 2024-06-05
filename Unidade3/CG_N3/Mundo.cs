@@ -93,10 +93,14 @@ namespace gcgcg
       GL.Clear(ClearBufferMask.ColorBufferBit);
 
       mundo.Desenhar(new Transformacao4D());
+      if (objetoSelecionado != null) {
+        Transformacao4D matrizADesenhar = objetoSelecionado.getPaiRefMatriz();
+        objetoSelecionado.Bbox().Desenhar(matrizADesenhar);
+      }
 
 #if CG_Gizmo      
       Gizmo_Sru3D();
-      if (objetoSelecionado != null) objetoSelecionado.Bbox().Desenhar(new Transformacao4D());
+      //if (objetoSelecionado != null) objetoSelecionado.Bbox().Desenhar(new Transformacao4D());
       // Gizmo_BBox();
 #endif
       SwapBuffers();
@@ -150,8 +154,6 @@ namespace gcgcg
       if (estadoTeclado.IsKeyPressed(Keys.D4) && objetoSelecionado != null)
         objetoSelecionado.MatrizRotacaoZBBox(-10);
       if (estadoTeclado.IsKeyPressed(Keys.Enter)) {
-        Console.WriteLine("estadoTeclado.IsKeyPressed(Keys.Enter)");
-        // TODO: Falta adicionar o quadrado no meio 
         objetoSelecionado = polignoEmAndamento;
         qtdObjetos++;
         polignoEmAndamento = null;
@@ -161,8 +163,6 @@ namespace gcgcg
        objetoSelecionado.PontosLimpar();    
        objetoSelecionado = null;    
       }
-      if (estadoTeclado.IsKeyPressed(Keys.E)) {}
-      // TODO: Remover vertice mais proximo do mouse
       if (estadoTeclado.IsKeyPressed(Keys.R) && objetoSelecionado != null) 
        objetoSelecionado.ShaderObjeto =_shaderVermelha;
       if (estadoTeclado.IsKeyPressed(Keys.G) && objetoSelecionado != null) 
