@@ -53,6 +53,23 @@ namespace CG_Biblioteca
     }
 #endif
 
+    public void Inversa()
+    {
+      var transform = Matrix4.Identity;
+      transform.M11 = (float)matriz[0]; transform.M12 = (float)matriz[4]; transform.M13 = (float)matriz[8]; transform.M14 = (float)matriz[12];
+      transform.M21 = (float)matriz[1]; transform.M22 = (float)matriz[5]; transform.M23 = (float)matriz[9]; transform.M24 = (float)matriz[13];
+      transform.M31 = (float)matriz[2]; transform.M32 = (float)matriz[6]; transform.M33 = (float)matriz[10]; transform.M34 = (float)matriz[14];
+      transform.M41 = (float)matriz[3]; transform.M42 = (float)matriz[7]; transform.M43 = (float)matriz[11]; transform.M44 = (float)matriz[15];
+
+      //FIXME: implementar em C# matriz inversa para não precisar ficar convertendo entre Transform4D e Matrix4
+      transform = Matrix4.Invert(transform);
+
+      matriz[0] = (float)transform.M11; matriz[4] = (float)transform.M12; matriz[8] = (float)transform.M13; matriz[12] = (float)transform.M14;
+      matriz[1] = (float)transform.M21; matriz[5] = (float)transform.M22; matriz[9] = (float)transform.M23; matriz[13] = (float)transform.M24;
+      matriz[2] = (float)transform.M31; matriz[6] = (float)transform.M32; matriz[10] = (float)transform.M33; matriz[14] = (float)transform.M34;
+      matriz[3] = (float)transform.M41; matriz[7] = (float)transform.M42; matriz[11] = (float)transform.M43; matriz[15] = (float)transform.M44;
+    }
+
     /// Atribui os valores de uma matriz Identidade a matriz de Transformacao.
     public void AtribuirIdentidade()
     {

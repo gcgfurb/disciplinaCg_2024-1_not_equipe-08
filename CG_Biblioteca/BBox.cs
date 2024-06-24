@@ -4,7 +4,7 @@
 
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
-// using OpenTK.Mathematics;
+using OpenTK.Mathematics;
 
 namespace CG_Biblioteca
 {
@@ -115,7 +115,7 @@ namespace CG_Biblioteca
     public Ponto4D ObterCentro => centro;
 
 #if CG_Gizmo
-    public void Desenhar(Transformacao4D matrizGrafo)
+    public void Desenhar()
     {
 
 #if CG_OpenGL && !CG_DirectX
@@ -137,16 +137,13 @@ namespace CG_Biblioteca
       GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
       GL.EnableVertexAttribArray(0);
 
-      //      var transform = Matrix4.Identity;
-      // matrizGrafo = matrizGrafo.MultiplicarMatriz(matriz);
-
       GL.BindVertexArray(_vertexArrayObject_bbox);
-      // _shaderAmarela.SetMatrix4("transform", transform);
-      _shaderAmarela.SetMatrix4("transform", matrizGrafo.ObterDadosOpenTK());
+      var transform = Matrix4.Identity;
+      _shaderAmarela.SetMatrix4("transform", transform);
 
       _shaderAmarela.Use();
       GL.DrawArrays(PrimitiveType.LineLoop, 0, ((_bbox.Length - 1) / 3));   // desenha a BBox
-      GL.PointSize(20);
+      GL.PointSize(10);
       GL.DrawArrays(PrimitiveType.Points, ((_bbox.Length - 1) / 3), 1);     // desenha ponto centro BBox
 
 #elif CG_DirectX && !CG_OpenGL
