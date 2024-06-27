@@ -4,6 +4,7 @@
 // #define CG_Privado // código do professor.
 
 using System;
+using System.Collections.Generic;
 using CG_Biblioteca;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -89,7 +90,7 @@ namespace gcgcg
         private Shader _shaderAmarela;
         private Shader _shader;
 
-        private Texture _texture;
+       private List<Texture> _textures;
         private Camera _camera;
         private Cubo cubo;
         private Cubo cuboMenor;
@@ -178,8 +179,13 @@ namespace gcgcg
             GL.EnableVertexAttribArray(texCoordLocation);
             GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
 
-            _texture = Texture.LoadFromFile("Imagens/image.jpg");
-            _texture.Use(TextureUnit.Texture0);
+            _textures = new List<Texture>
+            {
+                Texture.LoadFromFile("Imagens/bernardo.jpg"),
+                Texture.LoadFromFile("Imagens/joao.jpg"),
+                Texture.LoadFromFile("Imagens/nicole.jpg"),
+                Texture.LoadFromFile("Imagens/ana.jpg"),
+            };
 
             _camera = new Camera(Vector3.UnitZ, Size.X / (float)Size.Y);
         }
@@ -189,16 +195,16 @@ namespace gcgcg
             base.OnRenderFrame(e);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-            // bind pra mostrar a textura
+            _shader.Use();
             GL.BindVertexArray(_vertexArrayObject);
 
-            // faz a textura aparecer em todos os momentos
-            _shader.Use();
+            for (int i = 0; i < 4; i++)
+            {
+                _textures[i].Use(TextureUnit.Texture0);
+                GL.DrawElementsBaseVertex(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (i * 6 * sizeof(uint)), i * 4);
+            }
 
-            // por algum motivo, sem isso a textura nao aparece, TODO ver.
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
-
             objetoSelecionado.shaderCor = _shader;
           
             cuboMenor.MatrizRotacao(0.02);
