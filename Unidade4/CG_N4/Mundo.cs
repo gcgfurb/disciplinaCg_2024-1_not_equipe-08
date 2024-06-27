@@ -113,7 +113,7 @@ namespace gcgcg
             GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
             GL.Enable(EnableCap.DepthTest); // Ativar teste de profundidade
-            GL.Enable(EnableCap.CullFace); // Desenha os dois lados da face
+            // GL.Enable(EnableCap.CullFace); // Desenha os dois lados da face
             // GL.FrontFace(FrontFaceDirection.Cw);
             // GL.CullFace(CullFaceMode.FrontAndBack);
 
