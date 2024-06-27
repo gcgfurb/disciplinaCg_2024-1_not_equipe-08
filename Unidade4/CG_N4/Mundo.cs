@@ -92,7 +92,7 @@ namespace gcgcg
         private Texture _texture;
         private Camera _camera;
         private Cubo cubo;
-        private Ponto cuboMenor;
+        private Cubo cuboMenor;
 
         private bool _firstMove = true;
         private Vector2 _lastPos;
@@ -144,12 +144,13 @@ namespace gcgcg
             #region Objeto: cubo  
             cubo = new Cubo(mundo, ref rotuloNovo);
             objetoSelecionado = cubo;
+            objetoSelecionado.MatrizEscalaXYZ(0.2, 0.2, 0.2);
             #endregion
 
             #region Objeto: ponto  
-            cuboMenor = new Ponto(cubo, ref rotuloNovo, new Ponto4D(2.0, 0.0));
-            cuboMenor.PrimitivaTipo = PrimitiveType.Points;
-            cuboMenor.PrimitivaTamanho = 10;
+            cuboMenor = new Cubo(cubo, ref rotuloNovo);
+            cuboMenor.MatrizEscalaXYZ(0.1, 0.1, 0.1);
+            cuboMenor.MatrizTranslacaoXYZ(2, 0, 0);
         
             #endregion
 
@@ -180,7 +181,7 @@ namespace gcgcg
             _texture = Texture.LoadFromFile("Imagens/image.jpg");
             _texture.Use(TextureUnit.Texture0);
 
-            _camera = new Camera(Vector3.UnitZ * 5, Size.X / (float)Size.Y);
+            _camera = new Camera(Vector3.UnitZ, Size.X / (float)Size.Y);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -199,7 +200,7 @@ namespace gcgcg
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
 
             objetoSelecionado.shaderCor = _shader;
-
+          
             cuboMenor.MatrizRotacao(0.02);
 
             mundo.Desenhar(new Transformacao4D(), _camera);
